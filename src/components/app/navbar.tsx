@@ -6,7 +6,11 @@ import { TOOLS } from "@/lib/tools.config";
 import { cn } from "@/components/ui/cn";
 import { gaEvent } from "@/lib/ga";
 
-export function Navbar() {
+interface NavbarProps {
+  isPro?: boolean;
+}
+
+export function Navbar({ isPro = false }: NavbarProps) {
   const pathname = usePathname();
   const activeTools = TOOLS.filter((t) => t.active && t.phase === 1);
 
@@ -38,13 +42,15 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/upgrade"
-            onClick={() => gaEvent("upgrade_click", { source: "navbar" })}
-            className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            Upgrade
-          </Link>
+          {!isPro && (
+            <Link
+              href="/upgrade"
+              onClick={() => gaEvent("upgrade_click", { source: "navbar" })}
+              className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Upgrade
+            </Link>
+          )}
         </div>
         <nav className="flex w-full gap-2 overflow-x-auto pb-1 lg:hidden">
           {activeTools.map((t) => {
