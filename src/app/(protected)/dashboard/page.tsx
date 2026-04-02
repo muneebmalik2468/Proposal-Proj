@@ -13,7 +13,7 @@ export default async function DashboardPage() {
 
   const { data: userRow } = await supabase
     .from("users")
-    .select("email,is_pro,usage_count,usage_reset_at")
+    .select("full_name,email,is_pro,usage_count,usage_reset_at")
     .eq("id", user?.id ?? "")
     .maybeSingle();
 
@@ -22,33 +22,40 @@ export default async function DashboardPage() {
   const activeTools = TOOLS.filter((t) => t.active && t.phase === 1);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-8">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             Dashboard
           </h1>
-          <p className="mt-1 text-sm text-slate-600">{userRow?.email}</p>
+          <p className="mt-1 break-all text-sm text-slate-600 font-semibold">Welcome, {userRow?.full_name} 👋</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 lg:flex">
           {!isPro && (
             <Link href="/upgrade">
-              <Button zone="navy">Upgrade</Button>
+              <Button zone="navy" className="w-full">
+                Upgrade
+              </Button>
             </Link>
           )}
           <LogoutButton />
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="p-5 md:col-span-2">
-          <div className="text-sm font-semibold text-slate-600">Plan</div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="p-4 sm:p-5 lg:col-span-2">
+          <div className="text-sm font-semibold text-slate-600">Active Plan</div>
           <div className="mt-1 text-2xl font-extrabold text-slate-900">
             {isPro ? "Pro" : "Free"}
           </div>
           <div className="mt-3 text-sm text-slate-700">
             {isPro ? (
-              <>Unlimited generations.</>
+              <>
+              ~ Unlimited generations. <br />
+              ~ DMs & emails. <br />
+              ~ No ads. <br />
+              ~ Cancel anytime.
+              </>
             ) : (
               <>
                 {usageCount} / 5 generations used this month.{" "}
@@ -61,9 +68,9 @@ export default async function DashboardPage() {
           </div>
         </Card>
 
-        <Card className="p-5">
+        <Card className="p-4 sm:p-5">
           <div className="text-sm font-semibold text-slate-600">Quick links</div>
-          <div className="mt-3 grid gap-2">
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
             {activeTools.map((t) => (
               <Link
                 key={t.id}

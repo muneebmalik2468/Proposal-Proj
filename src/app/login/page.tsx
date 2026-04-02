@@ -3,10 +3,12 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,9 +16,33 @@ export default function LoginPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  React.useEffect(() => {
+    const supabase = createSupabaseBrowserClient();
+
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
+      if (!mounted) return;
+      if (data.session) {
+        router.replace("/dashboard");
+      }
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event: AuthChangeEvent, session: Session | null) => {
+      if (session) {
+        router.replace("/dashboard");
+      }
+      }
+    );
+
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, [router]);
+
   return (
     <div className="flex flex-1 items-center justify-center bg-slate-50 px-4 py-12">
-      <Toaster position="top-center" />
       <Card className="w-full max-w-md p-6">
         <h1 className="text-2xl font-extrabold text-slate-900">Login</h1>
         <p className="mt-1 text-sm text-slate-600">Welcome back.</p>
@@ -66,7 +92,14 @@ export default function LoginPage() {
           </label>
 
           <Button zone="navy" type="submit" disabled={loading}>
-            {loading ? "Signing in..." : "Login"}
+            {loading ? (
+              <span className="inline-flex items-center gap-2">
+                <Spinner />
+                Signing in...
+              </span>
+            ) : (
+              "Login"
+            )}
           </Button>
 
           <div className="text-sm text-slate-600">

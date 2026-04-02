@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { OutputBox } from "@/components/tool/OutputBox";
@@ -11,6 +11,7 @@ import { useLocalStorageJsonState } from "@/components/tool/useLocalStorageJson"
 import { InMailStyles } from "@/components/tool/toolStyles";
 import type { ToolColor } from "@/lib/tools.config";
 import { gaEvent } from "@/lib/ga";
+import { Spinner } from "@/components/ui/spinner";
 
 type State = {
   styleKey: (typeof InMailStyles)[number]["key"];
@@ -43,6 +44,11 @@ export default function LinkedInInMailPage() {
   const { generate, loading } = useGenerate();
 
   async function onGenerate() {
+    if (!form.prospectName.trim() || !form.myService.trim()) {
+      toast.error("Prospect Name and My Service are required.");
+      return;
+    }
+
     gaEvent("generate_click", { tool: "linkedin_inmail", style: state.styleKey });
     const res = await generate({
       promptKey: state.styleKey,
@@ -60,6 +66,7 @@ export default function LinkedInInMailPage() {
 
     if (!res.ok) {
       if (res.error === "limit_reached") setShowUpgrade(true);
+      else if (res.error === "network_error") toast.error("Network error. Please retry.");
       else toast.error("Generation failed. Please try again.");
       return;
     }
@@ -85,11 +92,10 @@ export default function LinkedInInMailPage() {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <Toaster position="top-center" />
+    <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-2">
       <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
 
-      <Card className="p-5">
+      <Card className="p-4 sm:p-5">
         <h1 className="text-2xl font-extrabold text-slate-900">LinkedIn InMail</h1>
         <p className="mt-1 text-sm text-slate-600">
           Required: Prospect Name + My Service. Everything else is optional.
@@ -202,14 +208,22 @@ export default function LinkedInInMailPage() {
             />
           </label>
 
-          <div className="flex flex-wrap gap-3">
-            <Button zone="blue" onClick={onGenerate} disabled={loading}>
-              {loading ? "Writing your InMail..." : "Generate"}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Button className="w-full" zone="blue" onClick={onGenerate} disabled={loading}>
+              {loading ? (
+                <span className="inline-flex items-center gap-2">
+                  <Spinner />
+                  Writing your InMail...
+                </span>
+              ) : (
+                "Generate"
+              )}
             </Button>
-            <Button variant="secondary" onClick={onGenerate} disabled={loading}>
+            <Button className="w-full" variant="secondary" onClick={onGenerate} disabled={loading}>
               Regenerate
             </Button>
             <Button
+              className="w-full"
               variant="secondary"
               onClick={() => {
                 setOutput("");
@@ -233,7 +247,7 @@ export default function LinkedInInMailPage() {
       <div ref={outputRef} className="space-y-3">
         <OutputBox value={output} zone={zone} />
         <div className="flex justify-end">
-          <Button variant="secondary" onClick={onCopy} disabled={!output}>
+          <Button className="w-full sm:w-auto" variant="secondary" onClick={onCopy} disabled={!output}>
             Copy
           </Button>
         </div>

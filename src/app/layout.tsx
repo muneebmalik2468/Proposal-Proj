@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { Toaster } from "react-hot-toast";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -36,6 +37,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <GoogleAnalytics />
+        <Toaster position="top-center" />
         {children}
       </body>
     </html>

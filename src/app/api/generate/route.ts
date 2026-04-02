@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
   // Monthly reset (MVP: done inline)
   const monthStart = firstDayOfCurrentMonthISO();
-  if (userRow.usage_reset_at && userRow.usage_reset_at < monthStart) {
+  if (!userRow.usage_reset_at || userRow.usage_reset_at < monthStart) {
     await supabase
       .from("users")
       .update({ usage_count: 0, usage_reset_at: monthStart })
@@ -85,17 +85,30 @@ export async function POST(req: Request) {
     return Response.json({ error: "missing_required_inputs" }, { status: 400 });
   }
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    max_tokens: 600,
-    temperature: 0.8,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPTS[promptKey] },
-      { role: "user", content: userPrompt },
-    ],
-  });
+  let output = "";
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4o-mini",
+      input: [
+        { role: "system", content: SYSTEM_PROMPTS[promptKey] },
+        { role: "user", content: userPrompt },
+      ],
+      max_output_tokens: 600,
+      temperature: 0.8,
+    });
 
-  const output = completion.choices?.[0]?.message?.content?.trim() ?? "";
+    output = response.output_text?.trim() || "";
+  } catch (error: any) {
+    console.error("OPENAI ERROR:", error);
+    return Response.json(
+      { error: "openai_failed", details: error.message },
+      { status: 502 }
+    );
+  }
+
+  if (!output) {
+    return Response.json({ error: "empty_output" }, { status: 502 });
+  }
 
   // Increment usage (always; Pro is unlimited)
   await supabase
