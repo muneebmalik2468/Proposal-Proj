@@ -31,15 +31,36 @@ export async function PATCH(
     const body = await request.json();
     const { full_name, is_pro, is_admin, usage_count } = body;
 
+    // Build update object
+    const updateData: any = {
+      ...(full_name !== undefined && { full_name }),
+      ...(is_admin !== undefined && { is_admin }),
+      ...(usage_count !== undefined && { usage_count }),
+    };
+
+    // Handle is_pro status change
+    if (is_pro !== undefined) {
+      updateData.is_pro = is_pro;
+
+      if (is_pro === true) {
+        // Set pro_since to now if converting to pro
+        updateData.pro_since = new Date().toISOString();
+        // Set pro_expires to 1 month from now
+        const expiresDate = new Date();
+        expiresDate.setMonth(expiresDate.getMonth() + 1);
+        // expiresDate.setFullYear(expiresDate.getFullYear() + 1);
+        updateData.pro_expires = expiresDate.toISOString();
+      } else {
+        // Clear pro dates if converting to free
+        updateData.pro_since = null;
+        updateData.pro_expires = null;
+      }
+    }
+
     // Update user
     const { data, error } = await supabase
       .from("users")
-      .update({
-        ...(full_name !== undefined && { full_name }),
-        ...(is_pro !== undefined && { is_pro }),
-        ...(is_admin !== undefined && { is_admin }),
-        ...(usage_count !== undefined && { usage_count }),
-      })
+      .update(updateData)
       .eq("id", userId)
       .select()
       .single();

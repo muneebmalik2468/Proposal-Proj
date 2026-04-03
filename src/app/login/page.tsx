@@ -91,6 +91,10 @@ export default function LoginPage() {
             />
           </label>
 
+          <Link href="/forgot-password" className="text-sm font-semibold text-slate-900 underline hover:text-slate-700">
+            Forgot password?
+          </Link>
+
           <Button zone="navy" type="submit" disabled={loading}>
             {loading ? (
               <span className="inline-flex items-center gap-2">
