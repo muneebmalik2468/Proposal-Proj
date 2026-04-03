@@ -14,6 +14,8 @@ interface User {
   is_pro: boolean;
   is_admin: boolean;
   usage_count: number;
+  pro_since: string | null;
+  pro_expires: string | null;
   created_at: string;
 }
 
@@ -95,6 +97,7 @@ export default function AdminDashboard() {
           is_pro: editedUser.is_pro,
           is_admin: editedUser.is_admin,
           usage_count: editedUser.usage_count,
+          pro_expires: editedUser.pro_expires,
         }),
       });
 
@@ -163,7 +166,7 @@ export default function AdminDashboard() {
 
             return (
               <Card key={user.id} className="p-4 sm:p-5">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
                   <div>
                     <label className="text-xs font-semibold text-slate-500 uppercase">
                       Email
@@ -261,6 +264,27 @@ export default function AdminDashboard() {
                       />
                     ) : (
                       <p className="mt-1 text-sm text-slate-900">{user.usage_count}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 uppercase">
+                      Pro Expires
+                    </label>
+                    {isEditing ? (
+                      <input
+                        type="datetime-local"
+                        value={isEditing.pro_expires ? new Date(isEditing.pro_expires).toISOString().slice(0, 16) : ""}
+                        onChange={(e) => {
+                          const date = e.target.value ? new Date(e.target.value).toISOString() : null;
+                          updateEditField(user.id, "pro_expires", date);
+                        }}
+                        className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-sm text-slate-900"
+                      />
+                    ) : (
+                      <p className="mt-1 text-sm text-slate-900">
+                        {user.pro_expires ? new Date(user.pro_expires).toLocaleDateString() : "-"}
+                      </p>
                     )}
                   </div>
 

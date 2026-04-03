@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui/spinner";
 
+export const dynamic = "force-dynamic";
+
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();

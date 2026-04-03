@@ -29,13 +29,14 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { full_name, is_pro, is_admin, usage_count } = body;
+    const { full_name, is_pro, is_admin, usage_count, pro_expires } = body;
 
     // Build update object
     const updateData: any = {
       ...(full_name !== undefined && { full_name }),
       ...(is_admin !== undefined && { is_admin }),
       ...(usage_count !== undefined && { usage_count }),
+      ...(pro_expires !== undefined && { pro_expires }),
     };
 
     // Handle is_pro status change
@@ -43,13 +44,15 @@ export async function PATCH(
       updateData.is_pro = is_pro;
 
       if (is_pro === true) {
-        // Set pro_since to now if converting to pro
+        // Set pro_since to now if converting to pro (only if not already set)
         updateData.pro_since = new Date().toISOString();
-        // Set pro_expires to 1 month from now
-        const expiresDate = new Date();
-        expiresDate.setMonth(expiresDate.getMonth() + 1);
-        // expiresDate.setFullYear(expiresDate.getFullYear() + 1);
-        updateData.pro_expires = expiresDate.toISOString();
+        // Set pro_expires to 1 year from now if not provided
+        if (!pro_expires) {
+          const expiresDate = new Date();
+          expiresDate.setMonth(expiresDate.getMonth() + 1);
+        //   expiresDate.setFullYear(expiresDate.getFullYear() + 1);
+          updateData.pro_expires = expiresDate.toISOString();
+        }
       } else {
         // Clear pro dates if converting to free
         updateData.pro_since = null;

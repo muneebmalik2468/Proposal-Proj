@@ -27,7 +27,7 @@ export async function GET() {
     // Get all users
     const { data: users, error } = await supabase
       .from("users")
-      .select("id, email, full_name, is_pro, is_admin, usage_count, created_at")
+      .select("id, email, full_name, is_pro, is_admin, usage_count, pro_since, pro_expires, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
