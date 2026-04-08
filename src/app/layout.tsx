@@ -21,7 +21,7 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "APPNAME",
+  title: "ClientPitcher - AI outreach tool for Pakistani freelancers",
   description: "AI outreach tool for Pakistani freelancers",
 };
 

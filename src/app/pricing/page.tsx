@@ -24,7 +24,7 @@ export default async function PricingPage() {
     <div>
       <header className="border-b border-slate-200 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
-          <a href="/" className="font-semibold text-slate-900">APPNAME</a>
+          <a href="/" className="font-semibold text-slate-900">ClientPitcher</a>
           <nav className="flex items-center gap-1 sm:gap-2">
             <a
               href="/pricing"

@@ -24,7 +24,7 @@ export function AdminHeader() {
         <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
           <div className="flex items-center gap-4">
             <Link href="/admin/dashboard" className="font-semibold text-slate-900">
-              APPNAME Admin
+              ClientPitcher Admin
             </Link>
           </div>
           <div className="flex items-center gap-2">

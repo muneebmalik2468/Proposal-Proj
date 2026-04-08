@@ -3,7 +3,7 @@ export default function Home() {
     <div className="min-h-full bg-white">
       <header className="border-b border-slate-200 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
-          <div className="font-semibold text-slate-900">APPNAME</div>
+          <div className="font-bold text-slate-900">ClientPitcher</div>
           <nav className="flex items-center gap-1 sm:gap-2">
             <a
               href="/pricing"
@@ -220,7 +220,7 @@ export default function Home() {
 
         <footer className="mt-16 border-t border-slate-200 pt-8 text-sm text-slate-600">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>© {new Date().getFullYear()} APPNAME</div>
+            <div>© {new Date().getFullYear()} ClientPitcher</div>
             <div className="flex gap-4">
               <a href="/privacy" className="hover:text-slate-900">
                 Privacy

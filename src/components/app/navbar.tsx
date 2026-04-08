@@ -19,7 +19,7 @@ export function Navbar({ isPro = false }: NavbarProps) {
       <div className="mx-auto flex min-h-14 max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" className="font-semibold text-slate-900">
-            APPNAME
+            ClientPitcher
           </Link>
           <nav className="hidden items-center gap-1 lg:flex">
             {activeTools.map((t) => {

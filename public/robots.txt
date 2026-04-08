@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Block sensitive/internal routes
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/dashboard/
+Disallow: /admin/login/
+Disallow: /login/
+Disallow: /signup/
+
+# Sitemap
+Sitemap: https://clientpitcher.com/sitemap.xml

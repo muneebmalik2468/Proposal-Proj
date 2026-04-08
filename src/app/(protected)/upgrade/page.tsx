@@ -27,7 +27,7 @@ export default async function UpgradePage() {
   const pkrPerUsd = await getPkrPerUsd();
   const amountPkr = pkrMonthlyPriceFromRate(pkrPerUsd);
 
-  const waText = `Hi! I just paid for APPNAME Pro.\nMy email is: ${email}`;
+  const waText = `Hi! I just paid for ClientPitcher Pro.\nMy email is: ${email}`;
   const waHref = `https://wa.me/${PAYMENTS.whatsappNumberE164}?text=${encodeURIComponent(waText)}`;
 
   return (

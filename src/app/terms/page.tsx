@@ -5,7 +5,7 @@ export default function TermsPage() {
         Terms of Service
       </h1>
       <p className="mt-4 text-sm leading-7 text-slate-700">
-        This is the MVP terms placeholder for APPNAME. By using the product, you agree
+        This is the MVP terms placeholder for ClientPitcher. By using the product, you agree
         to use generated content responsibly and comply with the terms of any platforms
         you use (e.g., Upwork, LinkedIn, email providers).
       </p>

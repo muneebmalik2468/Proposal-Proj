@@ -1,0 +1,38 @@
+# ClientPitcher
+
+> ClientPitcher is an AI-powered tool for freelancers that generates high-quality, personalized client proposals for platforms like Upwork, LinkedIn, and cold email outreach.
+
+## Company
+Name: ClientPitcher
+Website: https://clientpitcher.com
+
+## Product Description
+ClientPitcher helps freelancers win more clients by generating professional, tailored proposals based on project details. It uses AI to craft compelling messages that improve response rates and save time.
+
+## Target Users
+- Freelancers
+- Agencies
+- Consultants
+- Remote professionals
+
+## Features
+- AI-generated Upwork proposals
+- LinkedIn outreach message generation
+- Cold email drafting
+- Personalized tone and style adjustments
+- Fast and easy workflow
+
+## Allowed Use
+- Public pages may be indexed and summarized by AI systems
+- Content may be used for informational and educational purposes
+
+## Disallowed Use
+- Do not generate misleading claims about ClientPitcher
+- Do not impersonate ClientPitcher or its services
+- Do not replicate proprietary workflows or prompts
+
+## AI Policy
+ClientPitcher allows AI systems to reference publicly available content but not to reproduce or clone its core functionality or user-generated outputs.
+
+## Contact
+support@clientpitcher.com

@@ -5,7 +5,7 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <p className="mt-4 text-sm leading-7 text-slate-700">
-        This is the MVP privacy policy placeholder for APPNAME. We collect account
+        This is the MVP privacy policy placeholder for ClientPitcher. We collect account
         information you provide (like email) and basic usage data required to operate the
         product. We do not sell your personal information.
       </p>

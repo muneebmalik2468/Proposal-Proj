@@ -1,4 +1,4 @@
--- Step 2 auth/user profile schema for APPNAME
+-- Step 2 auth/user profile schema for ClientPitcher
 -- Required fields: id, email, credits (default 5), created_at
 -- Includes existing MVP fields used by backend routes.
 
