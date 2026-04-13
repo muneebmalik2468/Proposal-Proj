@@ -29,6 +29,7 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
   
   // Activity data states
   const [monthlyStats, setMonthlyStats] = useState({ proposals: 0, linkedInInMails: 0, connectionNotes: 0, coldEmails: 0, total: 0 });
@@ -102,29 +103,6 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", backgroundColor: "#F8FAFC", color: "#0F172A" }}>
-      {/* Mobile Menu Toggle Button */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        style={{
-          position: "fixed",
-          top: "20px",
-          left: "20px",
-          zIndex: 60,
-          display: isMobile ? "flex" : "none",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "40px",
-          height: "40px",
-          borderRadius: "8px",
-          border: "1px solid #E2E8F0",
-          background: "#FFFFFF",
-          cursor: "pointer",
-          fontSize: "20px",
-        }}
-        title="Toggle menu"
-      >
-        ☰
-      </button>
 
       {/* Sidebar */}
       <aside
@@ -293,8 +271,34 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
             position: "sticky",
             top: 0,
             zIndex: 40,
+            gap: "12px",
           }}
         >
+          {/* Mobile Menu Toggle Button - Inside Header */}
+          {isMobile && (
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "36px",
+                height: "36px",
+                borderRadius: "8px",
+                border: "1px solid #E2E8F0",
+                background: "#FFFFFF",
+                cursor: "pointer",
+                fontSize: "18px",
+                flexShrink: 0,
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#F8FAFC")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFFFF")}
+              title="Toggle menu"
+            >
+              ☰
+            </button>
+          )}
           <div>
             <div style={{ fontFamily: "'Sora', sans-serif", fontSize: "17px", fontWeight: 700, color: "#0F172A" }}>
               {currentView === "dashboard"
@@ -340,25 +344,27 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
                 </button>
               </Link>
             )}
-            <button
-              onClick={() => alert("Help center coming soon")}
-              style={{
-                padding: "7px 14px",
-                borderRadius: "8px",
-                fontSize: "13px",
-                fontWeight: 500,
-                border: "1px solid #E2E8F0",
-                background: "transparent",
-                color: "#475569",
-                cursor: "pointer",
-                fontFamily: "'DM Sans', sans-serif",
-                transition: "all 0.15s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#F8FAFC")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-            >
-              Help
-            </button>
+            {!isMobile && (
+              <button
+                onClick={() => setShowHelpModal(true)}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: "8px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  border: "1px solid #E2E8F0",
+                  background: "transparent",
+                  color: "#475569",
+                  cursor: "pointer",
+                  fontFamily: "'DM Sans', sans-serif",
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#F8FAFC")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
+                Help
+              </button>
+            )}
             <div
               style={{
                 width: "36px",
@@ -400,6 +406,110 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
           }}
           onClick={() => setSidebarOpen(false)}
         />
+      )}
+
+      {/* Help Modal */}
+      {showHelpModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.4)",
+            zIndex: 50,
+            padding: "16px",
+          }}
+          onClick={() => setShowHelpModal(false)}
+        >
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: "16px",
+              padding: "28px",
+              maxWidth: "500px",
+              width: "100%",
+              boxShadow: "0 20px 25px rgba(0,0,0,0.15)",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+              <div style={{ fontFamily: "'Sora', sans-serif", fontSize: "20px", fontWeight: 700, color: "#0F172A" }}>Help & Support</div>
+              <button
+                onClick={() => setShowHelpModal(false)}
+                style={{
+                  fontSize: "24px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#94A3B8",
+                  fontWeight: 700,
+                  transition: "color 0.15s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#0F172A")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#94A3B8")}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "#0F172A", marginBottom: "8px" }}>📧 Getting Started</div>
+                <div style={{ fontSize: "13px", color: "#475569", lineHeight: "1.6" }}>
+                  Welcome to ClientPitcher! Select any tool from the sidebar to start generating proposals, LinkedIn messages, or cold emails.
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "#0F172A", marginBottom: "8px" }}>💡 Tips & Tricks</div>
+                <div style={{ fontSize: "13px", color: "#475569", lineHeight: "1.6" }}>
+                  • Paste job postings for better proposal results<br />
+                  • Use personalization for LinkedIn messages<br />
+                  • View your usage history in the History tab
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "#0F172A", marginBottom: "8px" }}>🎯 Need More Help?</div>
+                <div style={{ fontSize: "13px", color: "#475569", lineHeight: "1.6" }}>
+                  Contact us on WhatsApp at <strong>+92 302 149 6945</strong> or email <strong>support@clientpitcher.com</strong>
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid #E2E8F0", paddingTop: "16px", marginTop: "16px" }}>
+                <div style={{ fontSize: "13px", color: "#94A3B8", textAlign: "center" }}>
+                  We're here to help! Response time: Usually within 2 hours (9am-11pm PKT)
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowHelpModal(false)}
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                padding: "10px 16px",
+                background: "#0F172A",
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "'DM Sans', sans-serif",
+                transition: "opacity 0.15s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
