@@ -26,6 +26,12 @@ export default function LinkedInInMailPage() {
   const [output, setOutput] = React.useState("");
   const outputRef = React.useRef<HTMLDivElement | null>(null);
 
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [state, setState] = useLocalStorageJsonState<State>("appname.linkedin_inmail", {
     styleKey: "value_sniper",
     goal: "Get a Reply",
@@ -65,7 +71,7 @@ export default function LinkedInInMailPage() {
     });
 
     if (!res.ok) {
-      if (res.error === "limit_reached") setShowUpgrade(true);
+      if (res.error === "insufficient_credits" || res.error === "limit_reached") setShowUpgrade(true);
       else if (res.error === "network_error") toast.error("Network error. Please retry.");
       else toast.error("Generation failed. Please try again.");
       return;
@@ -252,7 +258,7 @@ export default function LinkedInInMailPage() {
           </Button>
         </div>
 
-        {state.history.length > 0 && (
+        {mounted && state.history.length > 0 && (
           <Card className="p-4">
             <div className="text-sm font-bold text-slate-900">Last 3 outputs</div>
             <div className="mt-3 grid gap-2">

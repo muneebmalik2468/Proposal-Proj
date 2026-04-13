@@ -15,31 +15,32 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
 
-  React.useEffect(() => {
-    const supabase = createSupabaseBrowserClient();
+  // React.useEffect(() => {
+  //   const supabase = createSupabaseBrowserClient();
 
-    let mounted = true;
-    supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
-      if (!mounted) return;
-      if (data.session) {
-        router.replace("/dashboard");
-      }
-    });
+  //   let mounted = true;
+  //   supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
+  //     if (!mounted) return;
+  //     if (data.session) {
+  //       router.replace("/dashboard");
+  //     }
+  //   });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event: AuthChangeEvent, session: Session | null) => {
-      if (session) {
-        router.replace("/dashboard");
-      }
-      }
-    );
+  //   const { data: listener } = supabase.auth.onAuthStateChange(
+  //     (_event: AuthChangeEvent, session: Session | null) => {
+  //     if (session) {
+  //       router.replace("/dashboard");
+  //     }
+  //     }
+  //   );
 
-    return () => {
-      mounted = false;
-      listener.subscription.unsubscribe();
-    };
-  }, [router]);
+  //   return () => {
+  //     mounted = false;
+  //     listener.subscription.unsubscribe();
+  //   };
+  // }, [router]);
 
   return (
     <div className="flex flex-1 items-center justify-center bg-slate-50 px-4 py-12">
@@ -82,13 +83,30 @@ export default function LoginPage() {
 
           <label className="grid gap-2 text-sm font-semibold text-slate-900">
             Password
-            <input
+            <div className="relative">
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-10 text-[15px] font-normal text-slate-900 outline-none focus:ring-2 focus:ring-slate-900/10"
+                required
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 md:hidden"
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
+            {/* <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[15px] font-normal text-slate-900 outline-none focus:ring-2 focus:ring-slate-900/10"
               required
-            />
+            /> */}
           </label>
 
           <Link href="/forgot-password" className="text-sm font-semibold text-slate-900 underline hover:text-slate-700">

@@ -11,11 +11,14 @@ interface User {
   id: string;
   email: string;
   full_name: string | null;
-  is_pro: boolean;
+  category: string | null;
+  plan: "free" | "basic" | "pro" | "promax" | null;
+  credits: number;
+  credits_limit: number;
   is_admin: boolean;
   usage_count: number;
-  pro_since: string | null;
-  pro_expires: string | null;
+  plan_since: string | null;
+  plan_expires: string | null;
   created_at: string;
 }
 
@@ -94,10 +97,13 @@ export default function AdminDashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           full_name: editedUser.full_name,
-          is_pro: editedUser.is_pro,
+          category: editedUser.category,
+          plan: editedUser.plan,
+          credits: editedUser.credits,
+          credits_limit: editedUser.credits_limit,
           is_admin: editedUser.is_admin,
           usage_count: editedUser.usage_count,
-          pro_expires: editedUser.pro_expires,
+          plan_expires: editedUser.plan_expires,
         }),
       });
 
@@ -207,23 +213,81 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="text-xs font-semibold text-slate-500 uppercase">
-                      Pro
+                      Category
+                    </label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={isEditing.category || ""}
+                        onChange={(e) =>
+                          updateEditField(user.id, "category", e.target.value)
+                        }
+                        className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-sm text-slate-900"
+                      />
+                    ) : (
+                      <p className="mt-1 text-sm text-slate-900 break-words whitespace-normal">
+                        {user.category || "-"}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 uppercase">
+                      Plan
                     </label>
                     {isEditing ? (
                       <select
-                        value={isEditing.is_pro ? "true" : "false"}
+                        value={isEditing.plan || "free"}
                         onChange={(e) =>
-                          updateEditField(user.id, "is_pro", e.target.value === "true")
+                          updateEditField(user.id, "plan", e.target.value as "free" | "basic" | "pro" | "promax")
                         }
                         className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-sm"
                       >
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
+                        <option value="free">Free (5 credits)</option>
+                        <option value="basic">Basic (15 credits)</option>
+                        <option value="pro">Pro (200 credits)</option>
+                        <option value="promax">ProMax (Unlimited)</option>
                       </select>
                     ) : (
-                      <p className="mt-1 text-sm text-slate-900">
-                        {user.is_pro ? "✓ Yes" : "No"}
+                      <p className="mt-1 text-sm text-slate-900 capitalize">
+                        {user.plan || "free"}
                       </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 uppercase">
+                      Credits Left
+                    </label>
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        value={isEditing.credits || 0}
+                        onChange={(e) =>
+                          updateEditField(user.id, "credits", parseInt(e.target.value))
+                        }
+                        className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-sm text-slate-900"
+                      />
+                    ) : (
+                      <p className="mt-1 text-sm text-slate-900">{user.credits}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 uppercase">
+                      Credits Limit
+                    </label>
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        value={isEditing.credits_limit || 0}
+                        onChange={(e) =>
+                          updateEditField(user.id, "credits_limit", parseInt(e.target.value))
+                        }
+                        className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-sm text-slate-900"
+                      />
+                    ) : (
+                      <p className="mt-1 text-sm text-slate-900">{user.credits_limit}</p>
                     )}
                   </div>
 
@@ -269,21 +333,21 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="text-xs font-semibold text-slate-500 uppercase">
-                      Pro Expires
+                      Plan Expires
                     </label>
                     {isEditing ? (
                       <input
                         type="datetime-local"
-                        value={isEditing.pro_expires ? new Date(isEditing.pro_expires).toISOString().slice(0, 16) : ""}
+                        value={isEditing.plan_expires ? new Date(isEditing.plan_expires).toISOString().slice(0, 16) : ""}
                         onChange={(e) => {
                           const date = e.target.value ? new Date(e.target.value).toISOString() : null;
-                          updateEditField(user.id, "pro_expires", date);
+                          updateEditField(user.id, "plan_expires", date);
                         }}
                         className="mt-1 w-full rounded border border-slate-200 px-2 py-1 text-sm text-slate-900"
                       />
                     ) : (
                       <p className="mt-1 text-sm text-slate-900">
-                        {user.pro_expires ? new Date(user.pro_expires).toLocaleDateString() : "-"}
+                        {user.plan_expires ? new Date(user.plan_expires).toLocaleDateString() : "-"}
                       </p>
                     )}
                   </div>

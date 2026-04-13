@@ -16,6 +16,25 @@ export default function SignupPage() {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const [customCategory, setCustomCategory] = React.useState("");
+
+  const categories = [
+    "Web, Mobile & Software Development",
+    "Data Science & Analytics",
+    "AI & Machine Learning",
+    "Design & Creative",
+    "Writing & Translation",
+    "Sales & Marketing",
+    "Engineering & Architecture",
+    "IT & Networking",
+    "Customer Service",
+    "Legal",
+    "Accounting & Consulting",
+    "Admin Support",
+    "HR",
+    "Other",
+  ];
 
   React.useEffect(() => {
     const supabase = createSupabaseBrowserClient();
@@ -52,14 +71,32 @@ export default function SignupPage() {
           className="mt-6 grid gap-4"
           onSubmit={async (e) => {
             e.preventDefault();
+            
+            // Validate category
+            if (!category) {
+              toast.error("Please select a work category");
+              return;
+            }
+            
+            // Validate custom category if "Other" is selected
+            if (category === "Other" && !customCategory.trim()) {
+              toast.error("Please specify your work category");
+              return;
+            }
+
             setLoading(true);
             try {
               const supabase = createSupabaseBrowserClient();
+              const finalCategory = category === "Other" ? customCategory.trim() : category;
+              
               const { error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
-                  data: { full_name: fullName },
+                  data: { 
+                    full_name: fullName,
+                    category: finalCategory,
+                  },
                 },
               });
 
@@ -84,12 +121,13 @@ export default function SignupPage() {
           }}
         >
           <label className="grid gap-2 text-sm font-semibold text-slate-900">
-            Full name (optional)
+            Full name
             <input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[15px] font-normal text-slate-900 outline-none focus:ring-2 focus:ring-slate-900/10"
               placeholder="Your name"
+              required
             />
           </label>
 
@@ -114,6 +152,42 @@ export default function SignupPage() {
               required
             />
           </label>
+
+          <label className="grid gap-2 text-sm font-semibold text-slate-900">
+            Primary Work Category <span className="text-red-600">*</span>
+            <select
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                if (e.target.value !== "Other") {
+                  setCustomCategory("");
+                }
+              }}
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[15px] font-normal text-slate-900 outline-none focus:ring-2 focus:ring-slate-900/10"
+              required
+            >
+              <option value="">Select your work category...</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {category === "Other" && (
+            <label className="grid gap-2 text-sm font-semibold text-slate-900">
+              Specify your work category <span className="text-red-600">*</span>
+              <input
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                type="text"
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[15px] font-normal text-slate-900 outline-none focus:ring-2 focus:ring-slate-900/10"
+                placeholder="Enter your work category..."
+                required={category === "Other"}
+              />
+            </label>
+          )}
 
           <Button zone="navy" type="submit" disabled={loading}>
             {loading ? (

@@ -60,7 +60,7 @@ export default function UpworkPage() {
     });
 
     if (!res.ok) {
-      if (res.error === "limit_reached") setShowUpgrade(true);
+      if (res.error === "insufficient_credits" || res.error === "limit_reached") setShowUpgrade(true);
       else if (res.error === "network_error") toast.error("Network error. Please retry.");
       else toast.error("Generation failed. Please try again.");
       return;

@@ -29,35 +29,56 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { full_name, is_pro, is_admin, usage_count, pro_expires } = body;
+    const { 
+      full_name,
+      category,
+      plan, 
+      credits, 
+      credits_limit, 
+      is_admin, 
+      usage_count, 
+      plan_expires 
+    } = body;
 
     // Build update object
     const updateData: any = {
       ...(full_name !== undefined && { full_name }),
+      ...(category !== undefined && { category }),
       ...(is_admin !== undefined && { is_admin }),
       ...(usage_count !== undefined && { usage_count }),
-      ...(pro_expires !== undefined && { pro_expires }),
+      ...(plan_expires !== undefined && { plan_expires }),
     };
 
-    // Handle is_pro status change
-    if (is_pro !== undefined) {
-      updateData.is_pro = is_pro;
+    // Handle plan change
+    if (plan !== undefined) {
+      updateData.plan = plan;
 
-      if (is_pro === true) {
-        // Set pro_since to now if converting to pro (only if not already set)
-        updateData.pro_since = new Date().toISOString();
-        // Set pro_expires to 1 year from now if not provided
-        if (!pro_expires) {
-          const expiresDate = new Date();
+      // Set plan_since to now when changing plans
+      updateData.plan_since = new Date().toISOString();
+
+      // Set plan_expires based on plan type
+      if (!plan_expires) {
+        const expiresDate = new Date();
+        if (plan === "pro" || plan === "promax") {
+          expiresDate.setFullYear(expiresDate.getFullYear() + 1);
+        } else if (plan === "basic") {
           expiresDate.setMonth(expiresDate.getMonth() + 1);
-        //   expiresDate.setFullYear(expiresDate.getFullYear() + 1);
-          updateData.pro_expires = expiresDate.toISOString();
+        } else if (plan === "free") {
+          updateData.plan_since = null;
+          updateData.plan_expires = null;
         }
-      } else {
-        // Clear pro dates if converting to free
-        updateData.pro_since = null;
-        updateData.pro_expires = null;
+        if (plan !== "free") {
+          updateData.plan_expires = expiresDate.toISOString();
+        }
       }
+    }
+
+    // Handle credits updates
+    if (credits !== undefined) {
+      updateData.credits = credits;
+    }
+    if (credits_limit !== undefined) {
+      updateData.credits_limit = credits_limit;
     }
 
     // Update user

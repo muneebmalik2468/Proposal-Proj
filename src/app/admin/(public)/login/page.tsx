@@ -16,30 +16,30 @@ export default function AdminLoginPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  React.useEffect(() => {
-    const supabase = createSupabaseBrowserClient();
+  // React.useEffect(() => {
+  //   const supabase = createSupabaseBrowserClient();
 
-    let mounted = true;
-    supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
-      if (!mounted) return;
-      if (data.session) {
-        router.replace("/admin/dashboard");
-      }
-    });
+  //   let mounted = true;
+  //   supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
+  //     if (!mounted) return;
+  //     if (data.session) {
+  //       router.replace("/admin/dashboard");
+  //     }
+  //   });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event: AuthChangeEvent, session: Session | null) => {
-      if (session) {
-        router.replace("/admin/dashboard");
-      }
-      }
-    );
+  //   const { data: listener } = supabase.auth.onAuthStateChange(
+  //     (_event: AuthChangeEvent, session: Session | null) => {
+  //     if (session) {
+  //       router.replace("/admin/dashboard");
+  //     }
+  //     }
+  //   );
 
-    return () => {
-      mounted = false;
-      listener.subscription.unsubscribe();
-    };
-  }, [router]);
+  //   return () => {
+  //     mounted = false;
+  //     listener.subscription.unsubscribe();
+  //   };
+  // }, [router]);
 
   return (
     <div className="flex flex-1 items-center justify-center bg-slate-50 px-4 py-12">

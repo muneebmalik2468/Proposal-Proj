@@ -9,11 +9,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const { data: userRow } = await supabase
     .from("users")
-    .select("is_pro")
+    .select("plan")
     .eq("id", user?.id ?? "")
     .maybeSingle();
 
-  const isPro = Boolean(userRow?.is_pro);
+  const isPro = userRow?.plan === "pro" || userRow?.plan === "promax" || userRow?.plan === "basic";
 
   return (
     <div className="min-h-full">

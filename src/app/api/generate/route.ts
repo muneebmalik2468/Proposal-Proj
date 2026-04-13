@@ -50,10 +50,10 @@ export async function POST(req: Request) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  // Load user usage + plan state
+  // Load user plan + credit state
   const { data: userRow, error: rowErr } = await supabase
     .from("users")
-    .select("id,email,is_pro,usage_count,usage_reset_at")
+    .select("id,email,plan,credits,credits_limit,usage_count,usage_reset_at,plan_expires")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -61,7 +61,26 @@ export async function POST(req: Request) {
     return Response.json({ error: "user_row_missing" }, { status: 500 });
   }
 
-  // Monthly reset (MVP: done inline)
+  // Check if plan has expired
+  if (userRow.plan_expires && new Date(userRow.plan_expires) < new Date()) {
+    // Plan expired, revert to free
+    await supabase
+      .from("users")
+      .update({
+        plan: "free",
+        credits: 0,
+        credits_limit: 0,
+        plan_since: new Date().toISOString(),
+        plan_expires: null
+      })
+      .eq("id", user.id);
+    
+    userRow.plan = "free";
+    userRow.credits = 0;
+    userRow.credits_limit = 0;
+  }
+
+  // Monthly reset for free users (MVP: done inline)
   const monthStart = firstDayOfCurrentMonthISO();
   if (!userRow.usage_reset_at || userRow.usage_reset_at < monthStart) {
     await supabase
@@ -72,8 +91,14 @@ export async function POST(req: Request) {
     userRow.usage_reset_at = monthStart;
   }
 
-  if (!userRow.is_pro && (userRow.usage_count ?? 0) >= FREE_MONTHLY_LIMIT) {
+  // Check free tier limit (5 per month with no plan)
+  if (userRow.plan === "free" && (userRow.usage_count ?? 0) >= FREE_MONTHLY_LIMIT) {
     return Response.json({ error: "limit_reached" }, { status: 403 });
+  }
+
+  // Check credits for paid plans (not promax which is unlimited)
+  if ((userRow.plan === "basic" || userRow.plan === "pro") && (userRow.credits ?? 0) <= 0) {
+    return Response.json({ error: "insufficient_credits" }, { status: 403 });
   }
 
   const userPrompt = Object.entries(inputs)
@@ -110,12 +135,94 @@ export async function POST(req: Request) {
     return Response.json({ error: "empty_output" }, { status: 502 });
   }
 
-  // Increment usage (always; Pro is unlimited)
+  // Increment usage and deduct credits (for paid plans, not promax)
+  const updateData: any = { usage_count: (userRow.usage_count ?? 0) + 1 };
+  
+  if (userRow.plan === "basic" || userRow.plan === "pro") {
+    updateData.credits = Math.max(0, (userRow.credits ?? 1) - 1);
+  }
+  
   await supabase
     .from("users")
-    .update({ usage_count: (userRow.usage_count ?? 0) + 1 })
+    .update(updateData)
     .eq("id", user.id);
 
-  return Response.json({ output });
+  // Map promptKey to tool_type and log activity
+  const toolTypeMap: Record<PromptKey, string> = {
+    // Upwork
+    mirror: "upwork",
+    proof: "upwork",
+    diagnostic: "upwork",
+    // LinkedIn InMail
+    value_sniper: "linkedin-inmail",
+    curiosity_gap: "linkedin-inmail",
+    consultant_frame: "linkedin-inmail",
+    // LinkedIn Connection
+    shared_context: "linkedin-connection",
+    value_drop: "linkedin-connection",
+    sharp_question: "linkedin-connection",
+    // Cold Email
+    email_value: "cold-email",
+    email_curiosity: "cold-email",
+    email_diagnostic: "cold-email",
+  };
+
+  const toolType = toolTypeMap[promptKey] || "upwork";
+
+  // Format title based on tool type
+  let formattedTitle = "Content";
+  if (toolType === "upwork") {
+    // Show first 10 words of job post
+    const jobPost = inputs["Job Post Text"] || "";
+    const words = jobPost.trim().split(/\s+/).slice(0, 10).join(" ");
+    formattedTitle = words.length > 0 ? words : "Job Post";
+  } else if (toolType === "linkedin-inmail" || toolType === "linkedin-connection") {
+    // Format: [Prospect Name] - [My Service]
+    const prospectName = inputs["Prospect Name"] || "";
+    const myService = inputs["My Service"] || "";
+    if (prospectName && myService) {
+      formattedTitle = `${prospectName} - ${myService}`;
+    } else {
+      formattedTitle = prospectName || myService || "Connection";
+    }
+  } else if (toolType === "cold-email") {
+    // Format: [Prospect Name] - [Company]
+    const prospectName = inputs["Prospect Name"] || "";
+    const company = inputs["Company"] || "";
+    if (prospectName && company) {
+      formattedTitle = `${prospectName} - ${company}`;
+    } else {
+      formattedTitle = prospectName || company || "Email";
+    }
+  }
+
+  // Log activity
+  try {
+    console.log("Logging activity for user:", user.id, "tool:", toolType, "title:", formattedTitle);
+    const { error: insertError } = await supabase
+      .from("activity_logs")
+      .insert({
+        user_id: user.id,
+        tool_type: toolType,
+        action_type: "generate",
+        title: formattedTitle,
+        prompt_key: promptKey,
+      });
+    
+    if (insertError) {
+      console.error("Activity log insert error:", insertError);
+    } else {
+      console.log("Activity logged successfully");
+    }
+  } catch (logError) {
+    console.error("Failed to log activity:", logError);
+    // Don't fail the request if logging fails
+  }
+
+  return Response.json({ 
+    output,
+    // Include updated credits in response
+    credits: updateData.credits ?? userRow.credits
+  });
 }
 

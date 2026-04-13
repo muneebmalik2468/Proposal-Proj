@@ -21,7 +21,9 @@ export default async function ProtectedAdminLayout({
 
   const isAdmin = Boolean(userRow?.is_admin);
 
-  if (!isAdmin) redirect("/login");
+  // Redirect non-admin users to the user dashboard instead of login
+  // since they're already authenticated
+  if (!isAdmin) redirect("/dashboard");
 
   return <>{children}</>;
 }

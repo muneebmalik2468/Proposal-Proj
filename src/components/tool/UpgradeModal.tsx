@@ -18,7 +18,7 @@ export function UpgradeModal({
       <Card className="w-full max-w-md p-6">
         <h2 className="text-lg font-bold text-slate-900">Upgrade to Pro</h2>
         <p className="mt-2 text-sm text-slate-600">
-          You’ve reached the free limit of 5 generations this month.
+          "You’ve reached your monthly generation limit. Please upgrade your plan or wait for your credits to reset."
         </p>
         <div className="mt-5 flex gap-3">
           <Link href="/upgrade" className="flex-1">
