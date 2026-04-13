@@ -109,9 +109,18 @@ export default function HomePageClient() {
 
         <div className="relative mx-auto max-w-4xl text-center">
           {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm">
+          <div className="mb-6 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm font-semibold text-slate-600 shadow-sm text-center">
             <span className="inline-block h-2 w-2 rounded-full bg-green-600 animate-pulse" />
-            1,400 PKR/month · 3× cheaper than Other Platforms
+            
+            <span>
+              1,400 PKR/month
+            </span>
+
+            <span className="hidden sm:inline">·</span>
+
+            <span className="w-full sm:w-auto">
+              3× cheaper than other platforms
+            </span>
           </div>
 
           {/* Hero heading */}
