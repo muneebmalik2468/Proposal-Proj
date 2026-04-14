@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const TOOLS = [
   {
@@ -69,21 +70,56 @@ export default function HomePageClient() {
 
   // Calculate ROI
   const currentWins = proposals * (winRate / 100);
-  const newWinRate = winRate + improve;
+  const newWinRate = Math.min(winRate + improve, 100);
+
   const newWins = proposals * (newWinRate / 100);
   const extraJobs = newWins - currentWins;
+
   const extraIncome = Math.round(extraJobs * jobVal);
+
   const cost = 5;
-  const roi = Math.round((extraIncome / cost) * 100);
   const netGain = extraIncome - cost;
+
+  // More realistic ROI calculation
+  const realisticCost = cost + 50;
+
+  const roiRaw = (netGain / realisticCost) * 100;
+
+  const roi = Math.min(Math.round(roiRaw), 1000);
+  const displayROI = roiRaw > 1000 ? "1000%+" : `${roi}%`;
+  // const currentWins = proposals * (winRate / 100);
+  // const newWinRate = winRate + improve;
+  // const newWins = proposals * (newWinRate / 100);
+  // const extraJobs = newWins - currentWins;
+  // const extraIncome = Math.round(extraJobs * jobVal);
+  // const cost = 5;
+  // const roi = Math.round((extraIncome / cost) * 100);
+  // const netGain = extraIncome - cost;
 
   return (
     <div className="min-h-full bg-white">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
-          <Link href="/" className="font-heading text-lg font-bold text-slate-900">
-            ClientPitcher
+          <Link href="/" className="flex items-center">
+            {/* Mobile logo */}
+            <Image
+              src="/mobilehomelogo.png"
+              alt="ClientPitcher"
+              width={80}
+              height={40}
+              className="md:hidden"
+              priority
+            />
+            {/* Desktop logo */}
+            <Image
+              src="/desktophomelogo.png"
+              alt="ClientPitcher"
+              width={180}
+              height={140}
+              className="hidden md:block"
+              priority
+            />
           </Link>
           <nav className="flex items-center gap-1 sm:gap-2">
             <a
@@ -91,6 +127,12 @@ export default function HomePageClient() {
               className="rounded-lg px-2 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:px-3"
             >
               Pricing
+            </a>
+            <a
+              href="/login"
+              className="rounded-lg px-2 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:px-3"
+            >
+              Log In
             </a>
             <Link
               href="/signup"
@@ -132,13 +174,13 @@ export default function HomePageClient() {
 
           {/* Subheading */}
           <p className="mx-auto max-w-2xl text-lg text-slate-600 mb-3 leading-relaxed">
-            Pakistani freelancers earning $300–$2,000/month use ClientPitcher to write better
+            Pakistani freelancers earning $300–$2,000/month, use ClientPitcher to write better
             proposals, LinkedIn messages, and cold emails — without spending hours on each
             one.
           </p>
 
           <p className="text-sm text-slate-500 mb-8">
-            Less than a cup of chai per month. No dollar card needed.
+            Less than a double patty burger per month. No dollar card needed.
           </p>
 
           {/* CTAs */}
@@ -354,7 +396,7 @@ export default function HomePageClient() {
               </div>
               <div className="text-right">
                 <div className="font-heading text-4xl font-bold text-green-400 leading-none">
-                  {roi.toLocaleString()}%
+                  {displayROI.toLocaleString()}
                 </div>
                 <p className="text-sm text-slate-300 mt-2">Return on investment</p>
               </div>

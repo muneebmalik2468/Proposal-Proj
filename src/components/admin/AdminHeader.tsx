@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AdminLogoutConfirmationModal } from "@/components/admin/AdminLogoutConfirmationModal";
@@ -23,8 +24,14 @@ export function AdminHeader() {
       <header className="sticky top-0 z-40 w-full border-b border-slate-100 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
           <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="font-semibold text-slate-900">
-              ClientPitcher Admin
+            <Link href="/admin/dashboard" className="flex items-center">
+              <Image
+                src="/desktophomelogo.png"
+                alt="ClientPitcher Admin"
+                width={180}
+                height={140}
+                priority
+              />
             </Link>
           </div>
           <div className="flex items-center gap-2">

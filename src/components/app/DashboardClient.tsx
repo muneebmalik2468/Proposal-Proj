@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { TOOLS } from "@/lib/tools.config";
+import Image from "next/image";
 
 type View = "dashboard" | "history" | "upwork" | "linkedin-inmail" | "linkedin-conn" | "cold-email" | "settings" | "billing";
 
@@ -124,7 +125,7 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
         }}
       >
         {/* Logo */}
-        <div
+        {/* <div
           style={{
             padding: "20px",
             borderBottom: "1px solid #E2E8F0",
@@ -153,11 +154,20 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
           <div style={{ fontFamily: "'Sora', sans-serif", fontSize: "17px", fontWeight: 700, color: "#0F172A" }}>
             ClientPitcher
           </div>
-        </div>
+        </div> */}
+        <Link href="/dashboard" className="flex items-center">
+          <Image
+            src="/desktophomelogo.png"
+            alt="ClientPitcher"
+            width={180}
+            height={140}
+            priority
+          />
+        </Link>
 
         {/* Navigation */}
         <nav style={{ padding: "14px 12px", flex: 1 }}>
-          <div style={{ fontSize: "10px", fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 8px 6px", marginTop: "8px" }}>
+          <div style={{ fontSize: "10px", fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 8px 6px"}}>
             Overview
           </div>
           <SidebarItem
