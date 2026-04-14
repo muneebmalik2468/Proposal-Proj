@@ -100,7 +100,7 @@ export default function HomePageClient() {
     <div className="min-h-full bg-white">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
+        <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center justify-between gap-2 px-4 sm:px-6">
           <Link href="/" className="flex items-center">
             {/* Mobile logo */}
             <Image
