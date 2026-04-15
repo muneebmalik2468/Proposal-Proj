@@ -180,7 +180,7 @@ export default function HomePageClient() {
           </p>
 
           <p className="text-sm text-slate-500 mb-8">
-            Less than a double patty burger per month. No dollar card needed.
+            Costs less than a double patty burger per month. No dollar card required.
           </p>
 
           {/* CTAs */}
