@@ -230,7 +230,7 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
         <div style={{ margin: "14px", padding: "14px", background: "#0F172A", borderRadius: "12px", color: "#FFFFFF" }}>
           <div style={{ fontSize: "10px", opacity: 0.6, marginBottom: "2px" }}>Current plan</div>
           <div style={{ fontFamily: "'Sora', sans-serif", fontSize: "14px", fontWeight: 700, marginBottom: "10px" }}>
-            {userRow?.plan === "pro" ? "Pro" : userRow?.plan === "promax" ? "ProMax" : userRow?.plan === "basic" ? "Basic" : "Free"} {isPaid ? `— ${credits} / ${creditsLimit} credits` : `— ${usageCount} of 5 used`}
+            {userRow?.plan === "pro" ? "Pro" : userRow?.plan === "promax" ? "ProMax" : userRow?.plan === "basic" ? "Basic" : "Free"} {isPaid ? `— ${credits} / ${creditsLimit} credits` : `— ${credits} of 5 used`}
           </div>
           {/* <Link href="/upgrade">
             <button
@@ -486,7 +486,7 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
               <div>
                 <div style={{ fontSize: "14px", fontWeight: 600, color: "#0F172A", marginBottom: "8px" }}>🎯 Need More Help?</div>
                 <div style={{ fontSize: "13px", color: "#475569", lineHeight: "1.6" }}>
-                  Contact us on WhatsApp at <strong>+92 302 149 6945</strong> or email <strong>support@clientpitcher.com</strong>
+                  Contact us on WhatsApp at <strong>+92 370 650 0702</strong> or email <strong>supportclientpitcher@gmail.com</strong>
                 </div>
               </div>
 

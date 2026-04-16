@@ -85,19 +85,15 @@ export async function POST(req: Request) {
   if (!userRow.usage_reset_at || userRow.usage_reset_at < monthStart) {
     await supabase
       .from("users")
-      .update({ usage_count: 0, usage_reset_at: monthStart })
+      .update({ usage_count: 0, credits: userRow.credits_limit ?? 5, usage_reset_at: monthStart })
       .eq("id", user.id);
     userRow.usage_count = 0;
+    userRow.credits = userRow.credits_limit ?? 5;
     userRow.usage_reset_at = monthStart;
   }
 
-  // Check free tier limit (5 per month with no plan)
-  if (userRow.plan === "free" && (userRow.usage_count ?? 0) >= FREE_MONTHLY_LIMIT) {
-    return Response.json({ error: "limit_reached" }, { status: 403 });
-  }
-
-  // Check credits for paid plans (not promax which is unlimited)
-  if ((userRow.plan === "basic" || userRow.plan === "pro") && (userRow.credits ?? 0) <= 0) {
+  // Check credits for all plans (free, basic, pro) - promax is unlimited
+  if (userRow.plan !== "promax" && (userRow.credits ?? 0) <= 0) {
     return Response.json({ error: "insufficient_credits" }, { status: 403 });
   }
 
@@ -135,11 +131,12 @@ export async function POST(req: Request) {
     return Response.json({ error: "empty_output" }, { status: 502 });
   }
 
-  // Increment usage and deduct credits (for paid plans, not promax)
+  // Increment usage and deduct credits (all plans except promax which is unlimited)
   const updateData: any = { usage_count: (userRow.usage_count ?? 0) + 1 };
   
-  if (userRow.plan === "basic" || userRow.plan === "pro") {
-    updateData.credits = Math.max(0, (userRow.credits ?? 1) - 1);
+  if (userRow.plan !== "promax") {
+    const defaultCredits = userRow.plan === "free" ? 5 : 1;
+    updateData.credits = Math.max(0, (userRow.credits ?? defaultCredits) - 1);
   }
   
   await supabase

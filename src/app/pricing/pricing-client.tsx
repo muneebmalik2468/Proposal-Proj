@@ -536,7 +536,7 @@ export default function PricingPageClient({
             // onClick={() => window.open("https://wa.me/923021496945", "_blank")}
             onClick={() => {
               const message = `Hi, I have completed the payment.\nEmail: ${userEmail}\nPlease find the screenshot attached.`;
-              const url = `https://wa.me/923021496945?text=${encodeURIComponent(message)}`;
+              const url = `https://wa.me/923706500702?text=${encodeURIComponent(message)}`;
               window.open(url, "_blank");
             }}
             className="w-full rounded-lg bg-green-600 px-4 py-4 font-bold text-white hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
@@ -780,7 +780,7 @@ export default function PricingPageClient({
                     // onClick={() => window.open("https://wa.me/923021496945", "_blank")}
                     onClick={() => {
                       const message = `Hi, I have completed the payment.\nEmail: ${userEmail}\nPlease find the screenshot attached.`;
-                      const url = `https://wa.me/923021496945?text=${encodeURIComponent(message)}`;
+                      const url = `https://wa.me/923706500702?text=${encodeURIComponent(message)}`;
                       window.open(url, "_blank");
                     }}
                     className="w-full rounded-lg bg-green-600 px-4 py-3 font-bold text-white hover:bg-green-700 transition-colors flex items-center justify-center gap-2 mb-3"
