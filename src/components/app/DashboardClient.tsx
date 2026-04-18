@@ -230,7 +230,7 @@ export function DashboardClient({ user, userRow }: DashboardClientProps) {
         <div style={{ margin: "14px", padding: "14px", background: "#0F172A", borderRadius: "12px", color: "#FFFFFF" }}>
           <div style={{ fontSize: "10px", opacity: 0.6, marginBottom: "2px" }}>Current plan</div>
           <div style={{ fontFamily: "'Sora', sans-serif", fontSize: "14px", fontWeight: 700, marginBottom: "10px" }}>
-            {userRow?.plan === "pro" ? "Pro" : userRow?.plan === "promax" ? "ProMax" : userRow?.plan === "basic" ? "Basic" : "Free"} {isPaid ? `— ${credits} / ${creditsLimit} credits` : `— ${credits} of 5 used`}
+            {userRow?.plan === "pro" ? "Pro" : userRow?.plan === "promax" ? "ProMax" : userRow?.plan === "basic" ? "Basic" : "Free"} {isPaid ? `— ${credits} / ${creditsLimit} credits` : `— ${credits} of 5 left`}
           </div>
           {/* <Link href="/upgrade">
             <button
